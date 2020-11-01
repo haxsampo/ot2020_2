@@ -6,3 +6,5 @@ Tavallista tekstiä, joka sisältää **lihavoituja** ja *kursivoituja* osuuksia
 [Komentorivi.txt](https://github.com/haxsampo/ot2020_2/blob/master/laskarit/komentorivi.txt)
 
 testi
+testi2
+
