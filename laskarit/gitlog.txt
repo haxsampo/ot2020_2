@@ -1,0 +1,77 @@
+$ git log --stat | cat
+commit fb336f662a43bf6051c43480f24bb4fc13990f8f
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Sun Nov 1 19:23:12 2020 +0200
+
+    lisätty tiedostoja, file1,file2,file3
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit d615f8e6713e20a3772a25b56a313d03b9ff6639
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:17:45 2020 +0200
+
+    ptest
+
+ eka.txt    | 2 +-
+ kolmas.txt | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 69976cd30ce02a872317f5644a40d0347b9fdd3d
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:16:30 2020 +0200
+
+    paosd
+
+ tiedosto.txt => eka.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit ce37cae692288cca7e73fe7b228824250f9c9298
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:15:11 2020 +0200
+
+    oikeasti pois toinen
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 7e6ee3d5c7ecbb79e377bbf493e8c9524644399d
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:13:34 2020 +0200
+
+    stuff+asdioj
+
+ stuff/paosdjopj.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 1a6f6101f5646d42b8df2b430981aa234a40d347
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:13:00 2020 +0200
+
+    tokajakolmas
+
+ kolmas.txt | 1 +
+ toinen.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit 0e48a468a6da7c7bf27d20210fe2f7a40d491a53
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:11:49 2020 +0200
+
+    muutosjalisäsys
+
+ tiedosto.txt | 1 +
+ toinen.txt   | 0
+ 2 files changed, 1 insertion(+)
+
+commit 6b0e7c9301261d802802675a0b1e44280cc62805
+Author: Sampo Hakola <sampo.hakola@helsinki.fi>
+Date:   Thu Oct 29 06:09:01 2020 +0200
+
+    tiedostoluotu
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
