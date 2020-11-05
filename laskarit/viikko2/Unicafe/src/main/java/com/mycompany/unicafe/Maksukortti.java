@@ -3,7 +3,7 @@ package com.mycompany.unicafe;
 
 public class Maksukortti {
  
-    private int saldo;
+    private int saldo; //sentteinä
  
     public Maksukortti(int saldo) {
         this.saldo = saldo;
@@ -30,7 +30,11 @@ public class Maksukortti {
     public String toString() {
         int euroa = saldo/100;
         int senttia = saldo%100;
-        return "saldo: "+euroa+"."+senttia;
+        if(senttia < 10) {
+            return "saldo: "+euroa+".0"+senttia;
+        } else {
+           return "saldo: "+euroa+"."+senttia; 
+        }      
     } 
     
 }
