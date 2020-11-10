@@ -1,6 +1,7 @@
 # reitinhakuprojekti
 
 [vaatimusmäärittelyä](https://github.com/haxsampo/ot2020_2/blob/master/dokumentaatio/vaatimusm%C3%A4%C3%A4rittely.md)
+
 [tyäaikakirjanpito](https://github.com/haxsampo/ot2020_2/blob/master/dokumentaatio/ty%C3%B6aikakirjanpito.md)
 
 
