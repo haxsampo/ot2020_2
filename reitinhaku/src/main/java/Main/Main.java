@@ -21,11 +21,13 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 public class Main {
     public static void main(String[] args) {       
         MapViewer mapper = new MapViewer(7,60.2055, 24.6559);
-        GeoPosition frankfurt = new GeoPosition(50,  7, 0, 8, 41, 0);
-        GeoPosition wiesbaden = new GeoPosition(50,  5, 0, 8, 14, 0);
-        GeoPosition mainz     = new GeoPosition(50,  0, 0, 8, 16, 0);
-        GeoPosition darmstadt = new GeoPosition(49, 52, 0, 8, 39, 0);
-        GeoPosition offenbach = new GeoPosition(50,  6, 0, 8, 46, 0);
+        
+        //(60.2055, 24.6559);
+        GeoPosition frankfurt = new GeoPosition(60.2055, 24.6559);
+        GeoPosition wiesbaden = new GeoPosition(60.2065, 24.6500);
+        GeoPosition mainz     = new GeoPosition(60.205, 24.68);
+        GeoPosition darmstadt = new GeoPosition(60.21, 24.66);
+        GeoPosition offenbach = new GeoPosition(60.22, 24.67);
         List<GeoPosition> track = Arrays.asList( frankfurt, wiesbaden, mainz,
                                                 darmstadt, offenbach);
         RoutePaint painter = new RoutePaint(track);
@@ -33,7 +35,7 @@ public class Main {
         // -> zoomi on ilmeisesti jo implementoitu
         Frame frame = new Frame(mapper.getViewer());
         
-        
+        mapper.getViewer().setOverlayPainter(painter);
         //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         //int width = (int)screenSize.getWidth();
         //int height = (int)screenSize.getHeight();

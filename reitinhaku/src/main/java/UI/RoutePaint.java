@@ -10,9 +10,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.GeoPosition;
 
-public class RoutePaint {
+public class RoutePaint implements Painter<JXMapViewer> {
     
     private List<GeoPosition> track;
     private Color color = Color.RED;
@@ -22,6 +23,7 @@ public class RoutePaint {
         this.track = new ArrayList<GeoPosition>(track);
     }
     
+    @Override
     public void paint(Graphics2D graph, JXMapViewer map, int width, int height) {
         graph = (Graphics2D) graph.create();
         Rectangle rect = map.getViewportBounds();
@@ -32,12 +34,12 @@ public class RoutePaint {
         graph.setColor(Color.BLACK);
         graph.setStroke(new BasicStroke(4));
         drawRoute(graph, map);
-        /*
-        g.setColor(color);
-        g.setStroke(new BasicStroke(2));
-        drawRoute(g, map);
-        g.dispose();
-        */
+        
+        graph.setColor(color);
+        graph.setStroke(new BasicStroke(2));
+        drawRoute(graph, map);
+        graph.dispose();
+        
     }
     
     public void drawRoute(Graphics2D graph, JXMapViewer map ){
