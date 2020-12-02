@@ -1,5 +1,6 @@
 package Main;
 
+import GatherProcess.CSVHandler;
 import UI.MapViewer;
 import UI.Frame;
 import UI.RoutePaint;
@@ -20,6 +21,20 @@ import org.jxmapviewer.viewer.TileFactoryInfo;
 
 public class Main {
     public static void main(String[] args) {       
+        CSVHandler handler = new CSVHandler();
+        String path = "C:\\Users\\toni_\\Koulu\\kordiAll.csv";
+        
+        try{
+            handler.readCSV(path);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        List<List<String>> l = handler.getCsv();
+        for(var s : l) {
+            System.out.println(s);
+        }
+        /*
         MapViewer mapper = new MapViewer(7,60.2055, 24.6559);
         
         //(60.2055, 24.6559);
@@ -36,17 +51,8 @@ public class Main {
         Frame frame = new Frame(mapper.getViewer());
         
         mapper.getViewer().setOverlayPainter(painter);
-        //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        //int width = (int)screenSize.getWidth();
-        //int height = (int)screenSize.getHeight();
-
-        /** Display the viewer in a JFrame
-        JFrame frame = new JFrame("Reitinhaku_juttu");
-        frame.getContentPane().add(mapper.getViewer());
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);   
-        **/
+        */
+        
     }
     
 }

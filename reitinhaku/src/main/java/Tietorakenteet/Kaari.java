@@ -1,5 +1,6 @@
 package Tietorakenteet;
 
+import java.util.ArrayList;
 import org.jxmapviewer.viewer.GeoPosition;
 
 /**
@@ -10,8 +11,11 @@ public class Kaari {
     
     GeoPosition eka;
     GeoPosition toka;
+    double dist;
     
-    public Kaari() {
-        
+    
+    public Kaari(GeoPosition eka, GeoPosition toka) {
+        this.eka = eka;
+        this.toka = toka;
     }
 }
