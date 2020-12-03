@@ -14,16 +14,15 @@ import org.jxmapviewer.viewer.GeoPosition;
  */
 public class Node {
     
-    ArrayList<Kaari> kaaret;
+    ArrayList<Node> naapurit;
     GeoPosition pos;
     
     public Node(GeoPosition pos) {
         this.pos = pos;
-        this.kaaret = new ArrayList<Kaari>();
+        this.naapurit = new ArrayList<Node>();
     }
     
-    public void lisaaKaari(Kaari kaari) {
-        //Tsekkaa ettei oo samaa?
-        this.kaaret.add(kaari);
+    public void lisaaNaapuri(Node node) {
+        naapurit.add(node);
     }
 }
