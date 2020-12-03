@@ -1,9 +1,9 @@
 # Vaatimusmäärittely
 
 ## Sovelluksen tarkoitus
-ohjelman tarkoitus olisi käyttä open street mapin dataa ja tehdä tähän ympäristöön jonkinlainen reitinhakuohjelma
-tarkoitus olisi lähinnä tutustua siihen, että miten avointa karttadataa voi käyttää reitinetsimiseen myöhempiä projekteja varten
-kommunikaatio open street mapin kanssa toimii luultavasti helpoiten jollain ulkoisella kirjastolla
+ohjelman tarkoitus on käyttää open street mapin reittidataa ja tehdä Espoon alueelle sijoittuja reitinhakuohjelma. oppimistavoite on karttadatan käyttäminen.
+reittidata jalostetaan qgissiä käyttäen sellaiseen muotoon, että se saadaan ajettua relaatiokantaan ja näin ohjelman sisäiseksi käytettäväksi dataksi.
+käyttöliittymä toteutetaan ulkoisen JXMapViewer kirjaston avulla.
 
 ## käyttäjäroolit
 käyttäjät ovat tasa-arvoisia, järjestelmä ei tarvitse erikseen adminia, paitsi devausvaiheessa
