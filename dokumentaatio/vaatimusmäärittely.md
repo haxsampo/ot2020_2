@@ -1,9 +1,11 @@
 # Vaatimusmäärittely
 
 ## Sovelluksen tarkoitus
-ohjelman tarkoitus olisi käyttä open street mapin dataa ja tehdä tähän ympäristöön jonkinlainen reitinhakuohjelma
-tarkoitus olisi lähinnä tutustua siihen, että miten avointa karttadataa voi käyttää reitinetsimiseen myöhempiä projekteja varten
-kommunikaatio open street mapin kanssa toimii luultavasti helpoiten jollain ulkoisella kirjastolla
+ohjelman tarkoitus on käyttää open street mapin reittidataa ja tehdä Espoon alueelle sijoittuja reitinhakuohjelma. oppimistavoite on karttadatan käyttäminen.
+reittidata jalostetaan qgissiä käyttäen sellaiseen muotoon, että se saadaan ajettua relaatiokantaan ja näin ohjelman sisäiseksi käytettäväksi dataksi.
+käyttöliittymä toteutetaan ulkoisen JXMapViewer kirjaston avulla.
+reitinhaku toteutetaan ainakin A* algoritmia käyttäen.
+relaatiotietokanta toteutetaan SQLitellä, JDBC driverilla.  
 
 ## käyttäjäroolit
 käyttäjät ovat tasa-arvoisia, järjestelmä ei tarvitse erikseen adminia, paitsi devausvaiheessa
@@ -15,11 +17,11 @@ käyttäjä voi tallentaa etsityn reitin
 käyttäjä voi tallentaa pisteitä, jotka hakemalla ohjelma laskee uudestaan näitten välille reitin
 
 ## arkkitehtuurisuunnittelu
-tarvitaan joku palikka joka kommunikoi karttarajapintojen kanssa
-tarvitaan luultavasti joku palikka joka parsii kartan vektoridatan ohjelmassa käytettävään muotoon
-tarvitaan joku palikka joka tekee itse reitinetsimisen
-tarvitaan joku palikka joka näyttää kartan
-tarvitaan käyttöliittymä jolla käyttäjä voi valita pisteitä kartalta
-tarvitaan tietokanta johon pisteitä tallennetaan
+tarvitaan joku palikka joka kommunikoi karttarajapintojen kanssa, 
+tarvitaan luultavasti joku palikka joka parsii kartan vektoridatan ohjelmassa käytettävään muotoon, 
+tarvitaan joku palikka joka tekee itse reitinetsimisen, 
+tarvitaan joku palikka joka näyttää kartan, 
+tarvitaan käyttöliittymä jolla käyttäjä voi valita pisteitä kartalta, 
+tarvitaan tietokanta johon pisteitä tallennetaan, 
 tarvitaan palikka joka kommunikoi tietokannan kanssa
 
