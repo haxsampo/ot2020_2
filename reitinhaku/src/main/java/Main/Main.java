@@ -1,5 +1,6 @@
 package Main;
 
+import Algoritmit.NodeHolder;
 import GatherProcess.CSVHandler;
 import Tietorakenteet.Node;
 import UI.MapViewer;
@@ -29,45 +30,22 @@ public class Main {
     public static void main(String[] args) {       
         CSVHandler handler = new CSVHandler();
         String path = "C:\\Users\\toni_\\Koulu\\kordiAll.csv";
-        
+
         try{
             handler.readCSV(path);
         } catch (Exception e) {
             System.out.println(e);
         }
-        
-        List<List<String>> l = handler.getCsv();
+
+        NodeHolder nh = new NodeHolder();
+        nh.setNodes(handler.convertToNodes());
+        nh.laskeNaapurit();
         List<GeoPosition> track = new ArrayList<GeoPosition>();
-        List<Node> nodet = new ArrayList<Node>();
-        for(int i=0;i<l.size();i++) {
-            if(!(l.get(i).get(11).equals("yAtZero"))) {
-                double x1 = Double.parseDouble(l.get(i).get(11));
-                double y1 = Double.parseDouble(l.get(i).get(10));
-                GeoPosition uusGeo = new GeoPosition(y1, x1);
-                Node kasiteltava = new Node(uusGeo);
-                for(int j=0;j<l.size();j++) {
-                    if(!(l.get(i).get(11).equals("yAtZero"))) {
-                        
-                    }
-                }
-            }
-            
-            
-        }
         
-        for(int i=0;i<l.size();i++) {
-            if(!(l.get(i).get(11).equals("yAtZero"))) {
-                try{
-                    double x = Double.parseDouble(l.get(i).get(11));
-                    double y = Double.parseDouble(l.get(i).get(10));
-                    GeoPosition uus = new GeoPosition(x,y);
-                    track.add(uus);
-                } catch(Exception e) {
-                    System.out.println(e);
-                }
-                 
-            }
-        }
+        
+        
+        
+        
         MapViewer mapper = new MapViewer(7,60.2055, 24.6559);
         
         //(60.2055, 24.6559);
