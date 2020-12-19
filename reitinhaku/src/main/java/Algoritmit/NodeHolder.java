@@ -1,7 +1,10 @@
 package Algoritmit;
 
 import Tietorakenteet.Node;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -11,6 +14,7 @@ Luokka sisältää nodet joita käytettään reitinhakualgoritmissa
 public class NodeHolder {
     
     ArrayList<Node> nodes;
+    DecimalFormat df;
     
     public NodeHolder() {
         this.nodes = new ArrayList<Node>();
@@ -28,6 +32,12 @@ public class NodeHolder {
         this.nodes = nodes;
     }
     
+    public void collapseNodes() {
+        ArrayList<Node> uusi = new ArrayList<Node>();
+        boolean[] kasitellyt = new boolean[this.nodes.size()];
+        
+    }
+    
     /*
         Sisään lista jossa on laskettu naapureiksi jo samalla rivillä CSV:ssä 
         olleet. Funktio laskee listasta samaa geopositiota esittävät nodet ja
@@ -35,29 +45,54 @@ public class NodeHolder {
     */
     public void laskeNaapurit() {
         ArrayList<Node> uusi = new ArrayList<Node>();
-        ArrayList<Integer> kasitellyt = new ArrayList<Integer>();
+        boolean[] kasitellyt = new boolean[this.nodes.size()];
         for(int i = 0;i<this.nodes.size();i++) {
-            Node curr = this.nodes.get(i);
+            Node curr = this.nodes.get(i);            
             ArrayList<Integer> naapuriIndeksit = new ArrayList<Integer>();
-            if(!(kasitellyt.contains(i))) {
+            if(!(kasitellyt[i])) { //jos kasiteltava on kasitelty
                 for(int j = 0;j<this.nodes.size();j++) {
-                    if(!(i==j) && !(kasitellyt.contains(j))) {
-                        if(curr.getPos() == this.nodes.get(j).getPos()) {
+                    if(!(i==j) && !(kasitellyt[j])) {
+                        GeoPosition other = this.nodes.get(j).getPos();
+                        GeoPosition cur = curr.getPos();
+                        if(other.getLatitude() == cur.getLatitude() &&
+                                other.getLongitude() == cur.getLongitude()) {
                             naapuriIndeksit.add(j);
                         }
                     }  
                 }
-            }//if naapuriindeksi.size() == 0
-            naapuriIndeksit.add(i);
-            lisaaIndeksilla(naapuriIndeksit, uusi);
-            kasitellyt.addAll(naapuriIndeksit);
+                naapuriIndeksit.add(i);
+                lisaaIndeksilla(naapuriIndeksit, uusi);
+                kasitellyt = lisaaKasitellyt(naapuriIndeksit, kasitellyt);
+            }
+            
+            //System.out.println("i: "+i+" uusi length: "+uusi.size()+" kasitellyt amount: "+trueAmount(kasitellyt));
         }
         this.nodes=uusi;
     }
+    /*
+    Muuttaa kasitellyt listalta naapurit listan sisältämät indeksit trueksi
+    */
+    public boolean[] lisaaKasitellyt(ArrayList<Integer> naapurit, boolean[] kasitellyt) {
+        for(Integer indeksi : naapurit) {
+            kasitellyt[indeksi] = true;
+        }
+        return kasitellyt;
+    }
+    
+    public Integer trueAmount(boolean[] arr) {
+        Integer len = 0;
+        for(int i = 0; i<arr.length;i++) {
+            if(arr[i]) {
+                len++;
+            }
+        }
+        return len;
+    }
     
     /*
-    laskeNaapurit apufunktio - lisää indeksilistan nodejen naapurit listan 
-    ensimmäisen noden naapurit listalle
+    * laskeNaapurit apufunktio - lisää indeksilistan nodejen naapuritlistan 
+    * ensimmäisen noden naapuritlistalle. lisää lopuksi ensimmäisen noden uusi
+    * listalle
     */
     public void lisaaIndeksilla(ArrayList<Integer> indeksiLista, ArrayList<Node> uusi) {
         Node cur = nodes.get(indeksiLista.get(0));
@@ -71,8 +106,10 @@ public class NodeHolder {
     Lisää ekan noden naapureihin tokan noden naapurit
     */
     public void yhdistaNaapurit(Node eka, Node toka) {
-        for(Node naapuri : toka.getNaapurit()) {
-            eka.getNaapurit().add(naapuri);
+        for(int i = 0; i < toka.getNaapurit().size(); i++) {
+            Double etais = toka.getEtaisyydet().get(i);
+            Node nap = toka.getNaapurit().get(i);
+            eka.lisaaNaapuri(nap,etais);
         }
     }
     /*
@@ -113,6 +150,22 @@ public class NodeHolder {
             nod2 = nodeRec(nod2, nod, ran);
         }
         return nod;
+    }
+    
+    public void indeksoiNodet() {
+        for(int i = 0;i<this.nodes.size();i++) {
+            this.nodes.get(i).setId(i);          
+        }
+        /*
+        for(int i = 0;i<this.nodes.size();i++) {
+            int tagged = 0;
+            Node nod = this.nodes.get(i);
+            Node nap = nod.getNaapurit().get(0);
+            for(int j = 0;j<this.nodes.size();j++) {
+                
+            }
+        }
+        */
     }
 }
 
