@@ -154,7 +154,7 @@ public class Connect {
         connect();
         String sql = "SELECT * FROM Node";
         try {
-            System.out.println("Selectall try");
+            //System.out.println("Selectall try");
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()) {
