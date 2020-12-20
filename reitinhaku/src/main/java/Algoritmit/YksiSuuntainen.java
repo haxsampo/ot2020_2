@@ -22,10 +22,7 @@ public class YksiSuuntainen {
         while(true) {
             Node uusi = valitseNaapuri(nod, suunta);
             if(uusi == nod) { //ei enää uusia nodeja halutussa suunnassa
-                //System.out.println("lat:"+nod.getPos().getLatitude() + " lon: "+nod.getPos().getLongitude());
                 GeoPosition nap = nod.getNaapurit().get(0).getPos();
-                //System.out.println("node nap length"+nod.getNaapurit().size());
-                //System.out.println("napLat: "+ nap.getLatitude() + " napLon: "+nap.getLongitude());
                 break;
             } else {
                 nod = uusi;
@@ -47,7 +44,6 @@ public class YksiSuuntainen {
                     ret = el;
                 }
             }
-            
         }
         return ret;
     }

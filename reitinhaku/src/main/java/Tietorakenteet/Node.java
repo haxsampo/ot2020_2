@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import org.jxmapviewer.viewer.GeoPosition;
 
 /**
- * Node-luokka kuvaa tieaineiston digitointivaiheessa piirrettyjen viivojen
- * yhtä päätä. Kaksi nodea muodostavat viivan.
+ * Node-luokka kuvaa yhtä sijaintia kartalla, josta pääsee muihin nodeihin. 
  * @author toni_
  */
 public class Node {
@@ -63,7 +62,7 @@ public class Node {
     
     @Override
     public String toString() {
-        String pal = this.pos.getLatitude()+ " - "+pos.getLongitude()+", naapurien määrä: "+this.naapurit.size();
+        String pal = "id: "+this.id+" "+this.pos.getLatitude()+ " - "+pos.getLongitude()+", naapurien määrä: "+this.naapurit.size();
         return pal;
     }
 

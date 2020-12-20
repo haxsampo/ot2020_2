@@ -16,24 +16,26 @@ Käytetty CSV-tiedosto esittää tiedot kaarina joilla on kaksi koordinaattipist
 public class CSVHandler {
     
     List<List<String>> csv;
-    DecimalFormat df;
     ArrayList<GeoPosition> geopos;
     
     public CSVHandler() {
-        this.df = new DecimalFormat("#.######");
-        this.df.setRoundingMode(RoundingMode.CEILING);
         this.geopos = new ArrayList<GeoPosition>();
     }
     
     public void readCSV(String csvPath) throws Exception {
         List<List<String>> records = new ArrayList<>();
-        int i = 0;
         try(BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
             String line;
+            String kakke="";
+            int k = 0;
+            int amount = 0;
             while((line =br.readLine())!=null) {
                 String[] values = line.split(";");
-                records.add(Arrays.asList(values));
-                i++;
+                if(!(values[0].equals("x"))){
+                   records.add(Arrays.asList(values));
+                   amount++;
+                }
+                k++;
             }
         }
         this.csv = records;
@@ -47,40 +49,73 @@ public class CSVHandler {
         this.csv = csv;
     }
     
-    
-    /*
-    public ArrayList<Node> convertToNodes() {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        for(int i=1; i <csv.size(); i++) {
-            GeoPosition[] geopos = getNewGeoPos(i);
-            GeoPosition uusGeo = geopos[0];
-            Node node1 = new Node(uusGeo);    
-            GeoPosition uusGeo2 = geopos[1];
-            Node node2 = new Node(uusGeo2);
-            node1.lisaaNaapuri(node2);
-            node2.lisaaNaapuri(node1);
-            nodes.add(node2);
-            nodes.add(node1);
-        }
-        return nodes;
-    }
-    */
-    
     /*
     * Konvertoidaan CSV:n rivit omiksi nodeiksiin. Kaksi peräkkäistä riviä
     * muodostaa kaaren.
     */
     public ArrayList<Node> csvToNodes() {
         ArrayList<Node> nodes = new ArrayList<Node>();
-        for(int i = 1; i<csv.size(); i+=2) {
-            GeoPosition[] geopos = getNewGeoPos(i);
-            Double dist = getDist(i);
-            Node node1 = new Node(geopos[0]);
-            Node node2 = new Node(geopos[1]);
-            node1.lisaaNaapuri(node2,dist);
-            node2.lisaaNaapuri(node1, dist);
-            nodes.add(node1);
-            nodes.add(node2);
+        System.out.println(this.csv.size());
+        int amount = 0;
+        for(int i = 1; i<csv.size()-1; i+=2) {
+            if(i >= csv.size()) {
+                break;
+            }
+            Integer index = Integer.parseInt(csv.get(i).get(16).replaceAll("^\"|\"$", ""));
+            Integer indexMinus = Integer.parseInt(csv.get(i+1).get(16).replaceAll("^\"|\"$", ""));
+            System.out.println(csv.get(i).get(16));
+            System.out.println(csv.get(i+1).get(16));
+            
+            if((index==0 && indexMinus==-1)) {
+                GeoPosition[] geopos = getNewGeoPos(i);
+                Double dist = getDist(i);
+                Node node1 = new Node(geopos[0]);
+                Node node2 = new Node(geopos[1]);
+                node1.lisaaNaapuri(node2,dist);
+                node2.lisaaNaapuri(node1, dist);
+                nodes.add(node1);
+                nodes.add(node2);
+                amount++;
+            }
+            if(index==-1) {
+                String lat = this.csv.get(i).get(0);
+                String lon = this.csv.get(i).get(1);
+                GeoPosition uusGeo = new GeoPosition(Double.parseDouble(lat.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon.replaceAll("\"", "")));
+                Node node1 = new Node(uusGeo);
+                Double dist = getDist(i-1);
+                nodes.get(nodes.size()-1).lisaaNaapuri(node1,dist);
+                node1.lisaaNaapuri(nodes.get(nodes.size()-1), dist);
+                nodes.add(node1);
+                i--;
+                amount++;
+            }
+            if(index==0 && indexMinus==0) {
+                System.out.println("AMMUU");
+                GeoPosition[] geopos = geoKolme(i);
+                Double dist = getDist(i+1);
+                Node node1 = new Node(geopos[0]);
+                Node node2 = new Node(geopos[1]);
+                Node node3 = new Node(geopos[2]);
+                node3.lisaaNaapuri(node1, dist);
+                node3.lisaaNaapuri(node2,dist);
+                node2.lisaaNaapuri(node3, dist);
+                node1.lisaaNaapuri(node3, dist);
+                nodes.add(node1);
+                nodes.add(node2);
+                nodes.add(node3);
+                i++;
+                amount++;
+            }
+            /*
+            if(this.csv.get(i).get(16).equals("\"-1\"") && this.csv.get(i+1).get(16).equals("\"-1\"")) {
+                System.out.println("DINGDINGDING");
+                System.out.println(this.csv.get(i));
+                System.out.println(this.csv.get(i+1));
+                //i++;
+            }*/
+            
+            System.out.println("AMOUNT: "+amount+" i: "+i);
         }
         return nodes;
     }
@@ -89,9 +124,19 @@ public class CSVHandler {
     * Hakee etäisyyden annetun indeksinoden ja sitä seuraavan noden välillä
     */
     public Double getDist(Integer i) {
-        String str = this.csv.get(i+1).get(21);
-        str = str.replaceAll("\"", str);
-        Double doub =  Double.parseDouble(str);
+        String str = this.csv.get(i+1).get(20);
+        Double doub = null;
+        str = str.replaceAll("^\"|\"$", "");
+        if(str.equals("1\"1\"1") || str.equals("\"\"1\"1\"1\"\"") || str.equals("\"1\"1\"1\"")) {
+            doub = 1.0;
+        } else {
+            try{
+                doub =  Double.parseDouble(str);
+            }catch(Exception e) {
+                doub = 1.0;
+            }
+            
+        }
         return doub;
     }
  
@@ -105,68 +150,35 @@ public class CSVHandler {
         GeoPosition[] ret = new GeoPosition[2];
         String lat = this.csv.get(i).get(0);
         String lon = this.csv.get(i).get(1);
-        
         String lat2 = this.csv.get(i+1).get(0);
         String lon2 = this.csv.get(i+1).get(1);
-        /*
-        if(lon.equals("F") || lon.equals("T")) {
-           lat = checkForLength(this.csv.get(i).get(23));
-           lon = checkForLength(this.csv.get(i).get(22));
-           lat2 = checkForLength(this.csv.get(i).get(14));
-           lon2 = checkForLength(this.csv.get(i).get(13));
-        }*/
-        GeoPosition uusGeo = new GeoPosition(Double.parseDouble(lat.replaceAll("\"", "")), Double.parseDouble(lon.replaceAll("\"", "")));
-        GeoPosition uusGeo2 = new GeoPosition(Double.parseDouble(lat2.replaceAll("\"", "")), Double.parseDouble(lon2.replaceAll("\"", "")));
+        GeoPosition uusGeo = new GeoPosition(Double.parseDouble(lat.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon.replaceAll("\"", "")));
+        GeoPosition uusGeo2 = new GeoPosition(Double.parseDouble(lat2.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon2.replaceAll("\"", "")));
         ret[0] = uusGeo;
         ret[1] = uusGeo2;
         return ret;
     }
     
-    public GeoPosition[] getNewGeoPos1(Integer i) {
-        String lat = this.csv.get(i).get(11);
-        String lon = this.csv.get(i).get(10);
-        String lat2 = this.csv.get(i).get(13);
-        String lon2 = this.csv.get(i).get(12);
-        if(lon.equals("F") || lon.equals("T")) {
-            lat = this.csv.get(i).get(12);
-            lon = this.csv.get(i).get(11);
-            lat2 = this.csv.get(i).get(14);
-            lon2 = this.csv.get(i).get(13);
-         }
-        //System.out.println(lat+" "+lon);
-        //System.out.println(lat2+" "+lon2);
-        if(!lat.substring(0,2).equals("60")) {
-            System.out.println("KAKKA");
-        }
-        if(!lon.substring(0,2).equals("24") && !lon.substring(0,2).equals("25")) {
-            System.out.println(lon);
-            System.out.println("PISSA");
-        }
-        if(!lat2.substring(0,2).equals("60")) {
-            System.out.println("KAKKA");
-        }
-        GeoPosition uusGeo = new GeoPosition(Double.parseDouble(lat), Double.parseDouble(lon));
-        GeoPosition uusGeo2 = new GeoPosition(Double.parseDouble(lat2), Double.parseDouble(lon2));
-        GeoPosition[] ret = new GeoPosition[2];
+    public GeoPosition[] geoKolme(Integer i) {
+        GeoPosition[] ret = new GeoPosition[3];
+        String lat = this.csv.get(i).get(0);
+        String lon = this.csv.get(i).get(1);
+        String lat2 = this.csv.get(i+1).get(0);
+        String lon2 = this.csv.get(i+2).get(1);
+        String lat3 = this.csv.get(i+2).get(0);
+        String lon3 = this.csv.get(i+2).get(1);
+        GeoPosition uusGeo = new GeoPosition(Double.parseDouble(lat.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon.replaceAll("\"", "")));
+        GeoPosition uusGeo2 = new GeoPosition(Double.parseDouble(lat2.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon2.replaceAll("\"", "")));
+        GeoPosition uusGeo3 = new GeoPosition(Double.parseDouble(lat3.replaceAll("\"", "")), 
+                                            Double.parseDouble(lon3.replaceAll("\"", "")));
         ret[0] = uusGeo;
         ret[1] = uusGeo2;
+        ret[2] = uusGeo3;
         return ret;
-    }
-    
-    public String checkForLength(String kord) {
-        if(kord.length() > 9) {
-            return kord.substring(0,9);
-        } else {
-            return kord;
-        }
-    }
-    
-    public void readGeoPos() {
-        for(int i=1; i <csv.size(); i++) {            
-            GeoPosition[] line = getNewGeoPos(i);
-            geopos.add(line[0]);
-            geopos.add(line[1]);
-        }
     }
     
     public ArrayList<GeoPosition> getGeoPos() {

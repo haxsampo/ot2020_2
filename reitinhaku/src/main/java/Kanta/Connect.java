@@ -6,11 +6,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import org.jxmapviewer.viewer.GeoPosition;
+
+/*
+* Connect toimii SQL-rajapintana.
+*/
 
 public class Connect {
     
@@ -20,7 +23,9 @@ public class Connect {
     public Connect(String path) {
         this.path = path;
     }
-    
+    /*
+    Avaa yhteyden pathin osoittamaan tietokantaan.
+    */
     private void connect() {
         Connection conn = null;
         try {
@@ -33,7 +38,9 @@ public class Connect {
             System.out.println(e.getMessage());
         }
     }
-    
+    /*
+    Sulkee yhteyden tietokantaan
+    */
     private void closeConnection() {
         try {
             if(this.conn != null) {
@@ -45,6 +52,9 @@ public class Connect {
         }
     }
     
+    /*
+    Lisää kantaan yhden noden.
+    */
     public void insertNode(Node nod) {
         connect();
         Double lat = nod.getPos().getLatitude();
@@ -62,6 +72,10 @@ public class Connect {
         closeConnection();
     }
     
+    /*
+    Hakee kaikki SQL-kannassa olevat nodet ja näitten naapurit ja yhdistelee näistä
+    käytettävän listan.
+    */
     public ArrayList<Node> getAll() {
         connect();
         ArrayList<Node> ret = selectAllNodes();
@@ -70,7 +84,9 @@ public class Connect {
         closeConnection();
         return ret;
     }
-    
+    /*
+    Hakee kannan kaikki nodet
+    */
     private ArrayList<Node> selectAllNodes() {
         ArrayList<Node> ret = new ArrayList<Node>();
         String sql = "SELECT * FROM Node";
@@ -78,7 +94,9 @@ public class Connect {
             System.out.println("Selectall try");
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
+            int i = 0;
             while(rs.next()) {
+                i++;
                 GeoPosition pos = new GeoPosition(rs.getDouble("Latitude"),
                                                 rs.getDouble("Longitude"));
                 Node nod = new Node(pos,rs.getInt("NodeId"));
@@ -92,15 +110,18 @@ public class Connect {
     }
     
     /*
-    Lisätään nodeihin kaaret eli naapurit
+    Hakee kaaret - eli nodejen naapuritiedot
     */
-    private ArrayList<Kaari> getKaaret() {
+    public ArrayList<Kaari> getKaaret() {
         ArrayList<Kaari> kaaret = new ArrayList<Kaari>();
         String sql = "SELECT * FROM Kaari";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
+            int i = 0;
             while(rs.next()) {
+                //System.out.println("getKaaret i: "+i);
+                i++;
                 Double pituus = rs.getDouble("Pituus");
                 int id = rs.getInt("KaariId");
                 int id1 = rs.getInt("NodeId1");
@@ -115,13 +136,16 @@ public class Connect {
         return kaaret;
     }
     
+    /*
+    Yhdistää nodejen naapuritiedot sekä nodet itsensä
+    */
     private ArrayList<Node> combineKaariNode(ArrayList<Node> nodes, ArrayList<Kaari> kaaret) {
         for(int i = 0; i <kaaret.size();i++) {
             Kaari kaari = kaaret.get(i);
-            Node yks = nodes.get(kaari.getNodeId1());
-            Node kaks = nodes.get(kaari.getNodeId2());
+            Node yks = nodes.get(kaari.getNodeId1()-1);
+            Node kaks = nodes.get(kaari.getNodeId2()-1);
             yks.lisaaNaapuri(kaks, kaari.getPituus());
-            kaks.lisaaNaapuri(yks,kaari.getPituus());
+            //kaks.lisaaNaapuri(yks,kaari.getPituus());
         }
         return nodes;
     }
@@ -146,11 +170,14 @@ public class Connect {
     }
     
     public void insertAll(ArrayList<Node> nodes) {
-        System.out.println("Nodes length in insertall"+nodes.size());
         connect();
         String sql = "";
         try {
+            int i = 0;
             for(Node nod : nodes) {
+                //System.out.println("insertAll i: "+i);
+                //System.out.println(nod);
+                i++;
                 sql = "INSERT INTO Node(NodeId,Latitude,Longitude) VALUES(?,?,?)";
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(1,nod.getId());
@@ -169,15 +196,20 @@ public class Connect {
     
     private void insertKaaret(Node nod) {
         ArrayList<Double> etaisyydet = nod.getEtaisyydet();
+        ArrayList<Node> naapurit = nod.getNaapurit();
+        //System.out.println("Naapurit len: "+naapurit.size()+"  etäisyydet len: "+etaisyydet.size());
         
         for(int i=0;i<etaisyydet.size();i++) {
-            //System.out.println("naapuri Id:"+nod.getNaapurit().get(i).getId());
-            insertKaari(etaisyydet.get(i),nod.getId(),
-                        nod.getNaapurit().get(i).getId());
+            //System.out.println(etaisyydet.get(i)+" "+nod.getId()+" "+naapurit.get(i).getId());
+            if(!(naapurit.get(i).getId()==null)){ //voi ehkä poistaa lopulliseen
+                insertKaari(etaisyydet.get(i),nod.getId(),naapurit.get(i).getId());
+            }
+            
         }
     }
     
     private void insertKaari(Double pituus, int nod1, int nod2) {
+        //System.out.println("Connect - insertKaari - pituus: "+pituus);
         String sql = "INSERT INTO Kaari(Pituus,NodeId1,NodeId2) VALUES(?,?,?)";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);

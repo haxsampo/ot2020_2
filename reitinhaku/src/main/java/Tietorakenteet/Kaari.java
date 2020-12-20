@@ -5,7 +5,11 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  *
- * Esittää Open Street Mapista saatavan reittidatan yhtä vektoria
+ * Esittää noden yhteyttä yhteen naapuriinsa.
+ * @param id - Kaaren oma SQL-kannan id
+ * @param nodeId1 - Node jonka naapuriLista on kyseessä
+ * @param nodeId2 - Node joka on nodeId1:sen naapurilistalla
+ * @param pituus - Kaaren pituus
  */
 public class Kaari {
     
