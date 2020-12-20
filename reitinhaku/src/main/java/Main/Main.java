@@ -47,6 +47,17 @@ public class Main {
                 tahti.parsiReitti();
                 track = tahti.getValmisReitti();
                 
+                MapViewer mapper = new MapViewer(7,60.2055, 24.6559);
+                RoutePaint painter = new RoutePaint(track);
+                MouseInputListener mia = new PanMouseInputListener(mapper.getViewer());
+                mapper.getViewer().addMouseListener(mia);
+                mapper.getViewer().addMouseMotionListener(mia);
+                mapper.getViewer().addMouseListener(new CenterMapListener(mapper.getViewer()));
+                mapper.getViewer().addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapper.getViewer()));
+                mapper.getViewer().addKeyListener(new PanKeyListener(mapper.getViewer()));
+                Frame frame = new Frame(mapper.getViewer());
+                mapper.getViewer().setOverlayPainter(painter);
+                
                 System.out.println("k sulkee ohjelman");
                 String exit = myObj.nextLine();
                 if(exit.equals("k")) {
@@ -88,6 +99,11 @@ public class Main {
                 Frame frame = new Frame(mapper.getViewer());
                 mapper.getViewer().setOverlayPainter(painter);
                 //System.out.println("");
+                System.out.println("k sulkee ohjelman");
+                String exit = myObj.nextLine();
+                if(exit.equals("k")) {
+                    break;
+                }
             }
             
         }
